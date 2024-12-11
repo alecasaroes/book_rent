@@ -1,0 +1,17 @@
+.body{
+    background-color: red;
+}
+
+.container {
+    border: 1px solid red;
+}
+
+.header{
+    border: 1px solid black;
+    text-align: center;
+}
+
+.content {
+    border: 1px solid blue;
+    text-align: center;    
+}
