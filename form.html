@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AMOA Book Rent</title>
+</head>
+<body>
+    <form action="/submit" method="POST" onsubmit="return validateForm()">
+        <input type="text" id="firstName" name="firstName" placeholder="First Name" required />
+        <input type="text" id="lastName" name="lastName" placeholder="Last Name" required />
+        <input type="email" id="email" name="email" placeholder="Email" required />
+        <input type="text" id="phone" name="phone" placeholder="Phone Number" required />
+        <input type="text" id="eircode" name="eircode" placeholder="Eircode" required />
+        <button type="submit">Submit</button>
+    </form>
+
+    <script src="form_script.js"></script>
+</body>
+</html>
