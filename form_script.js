@@ -1,9 +1,42 @@
+async function handleSubmit(event) {
+    event.preventDefault();
+    
+    if (!validateForm()) {
+        return;
+    }
+    
+    const formData = {
+        firstName: document.getElementById("firstName").value,
+        lastName: document.getElementById("lastName").value,
+        age: document.getElementById("age").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        eircode: document.getElementById("eircode").value
+    };
+    
+    try {
+        const response = await fetch('/api/userdata', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        if (response.ok) {
+            alert('Data submitted successfully');
+        }
+    } catch (error) {
+        console.error('Error submitting form:', error);
+    }
+}
+
+
 function validateForm() {
     const nameRegex = /^[a-zA-Z0-9]{1,20}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^\d{10}$/;
     const eircodeRegex = /^[a-zA-Z0-9]{6}$/;
-
     const firstName = document.getElementById("firstName").value;
     const lastName = document.getElementById("lastName").value;
     const email = document.getElementById("email").value;

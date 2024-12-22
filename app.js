@@ -1,11 +1,17 @@
 import express from 'express'
 import { getUsersData, getUser, insertRecord } from './database.js'
 //import { connectToDatabase } from './database.js'
-
 import mysql from 'mysql2'
+import path from 'path'
+import { fileURLToPath } from 'url';
+
 
 const app = express()
 const PORT = 3000
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = import.meta.dirname
+
+
 
 const dbConfig = {
   host: process.env.HOST,
@@ -21,7 +27,15 @@ const csvData = [
   { firstName: "Tommy", lastName: "Bean", age: 35, email: "michaeljohnson@example.com", phone: "0894859612", eircode: "EYR5DD" }
 ];
 
+app.use(express.static('public'));
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '/form.html'));
+});
+
 
 app.get("/userdata", async (req, res) => {
     const userdata = await getUsersData()
@@ -33,6 +47,23 @@ app.get("/userdata/:id", async (req, res) => {
     const userdata = await getUser(id)
     res.send(userdata)
 })
+
+
+app.post('/api/userdata', async (req, res) => {
+  try {
+      const { firstName, lastName, age, email, phone, eircode } = req.body;
+      
+      // Validate the incoming data
+      validateRecord({firstName, lastName, age, email, phone, eircode}, 0);
+      
+      // Insert into database
+      const result = await insertRecord(firstName, lastName, age, email, phone, eircode);
+      
+      res.status(201).json(result);
+  } catch (error) {
+      res.status(400).json({ error: error.message });
+  }
+});
 
 
 app.use((err, req, res, next) => {
@@ -93,6 +124,7 @@ async function initializeApp() {
       
       app.listen(PORT, () => {
           console.log(`Server is running on port ${PORT}`);
+          console.log(`Fill the form.html on http://localhost:3000/`)
       });
   } catch (error) {
       console.error('Failed to connect to database:', error);
@@ -103,10 +135,26 @@ async function initializeApp() {
 
 insertValidRecords(csvData);
 
-
 initializeApp()
 
-app.listen (3000, () => {
-  console.log(`Server is running on port ${PORT}`);
-  
-})
+
+// app.get("./submit", async (req, res) => {
+//   try {
+//       const { firstName, lastName, age, email, phone, eircode } = req.body;
+      
+//       // Validate the incoming data
+//       validateRecord({firstName, lastName, age, email, phone, eircode}, 0);
+      
+//       // Insert into database
+//       const result = await insertRecord(firstName, lastName, age, email, phone, eircode)
+      
+//       res.status(201).json(result);
+//   } catch (error) {
+//       res.status(400).json({ error: error.message })
+//   }
+// })
+
+
+
+
+app.listen (PORT, () => {})
